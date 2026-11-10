@@ -5,7 +5,9 @@ from typing import Any, Callable, Optional, Tuple
 
 try:
     import discord
-except ImportError:  # the adapter does not start without discord.py
+except ImportError:
+    # None until check_discord_requirements() publishes the lazy install
+    # (discord_runtime.publish_discord). Keep this name so publish can see it.
     discord = None
 
 

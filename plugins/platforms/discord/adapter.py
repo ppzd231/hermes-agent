@@ -582,14 +582,13 @@ def discord_deps_present() -> bool:
 
 
 def check_discord_requirements() -> bool:
-    """Check if Discord dependencies are available.
-
-    Lazy-installs discord.py via ``pm.ensure_import("discord")``
-    on first call if not present. After successful install, re-binds module
-    globals so ``DISCORD_AVAILABLE`` becomes True.
-    """
+    """Lazy-install discord.py and publish it to siblings that cached ``None``."""
     global DISCORD_AVAILABLE, discord, DiscordMessage, Intents, commands
+    from plugins.platforms.discord.discord_runtime import publish_discord
+
     if DISCORD_AVAILABLE:
+        if discord is not None:
+            publish_discord(discord)
         return True
     try:
         from pm import ensure_import as _lazy_ensure
@@ -607,6 +606,7 @@ def check_discord_requirements() -> bool:
     Intents = _Intents
     commands = _commands
     DISCORD_AVAILABLE = True
+    publish_discord(_discord)
     _define_discord_view_classes()
     return True
 
